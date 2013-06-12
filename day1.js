@@ -10,7 +10,7 @@ function calculate(string){
         return String(result);
     }catch(err)
     {
-        return"err0r: "+err;
+        return"error: "+err;
     }
     
 }
@@ -140,9 +140,12 @@ function read_term(tokens){
     }
     return operand1;
 }
+$(".calculator input").keypress(function(e){
+    console.log(e+"0");
+});
 function setup_calc(calc){
     var input=$("<input></input>", {type:"text", size:"50"});
-    var output=$("<div></div>");
+    var output=$("<div></div>", {class:"output"});
     var button=$("<button> Calculate </button>");
     
     button.bind("click", function(){

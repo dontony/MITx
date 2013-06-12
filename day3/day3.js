@@ -15,6 +15,6 @@ function test_line(){
     context.beginPath();
     context.moveTo(50,50);
     context.lineTo(150,150);
-    context.arcTo(50,50);
+    context.arcTo(150,50, 150, 100, 20);
     context.stroke();
 }

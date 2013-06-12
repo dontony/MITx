@@ -9,8 +9,8 @@ var graphcalc = (function () {
         var maxX=0;
         try {
             expr_tree = calculator.parse(expression);
-            minX = calculator.parse(x1);
-            maxX = calculator.parse(x2);
+            minX = calculator.evaluate(calculator.parse(x1));
+            maxX = calculator.evaluate(calculator.parse(x2));
             console.log("got expression");
         }
         catch(err){
@@ -26,11 +26,11 @@ var graphcalc = (function () {
         var xStep = (maxX-minX)/400;
         var temp = minX;
         var xvals = [];
-        while(temp<=maxX){
-            xvals.push(temp+xStep);
+        while(temp<400){
+            xvals.push(temp*xStep);
             temp++;
         }
-        console.log(xStep);
+        console.log(xvals);
         var yvals=[];
         for(var index = 0; index <= xvals.length; index+=1){
             yvals.push(calculator.evaluate(expr_tree,{x:xvals[index],
@@ -50,10 +50,10 @@ var graphcalc = (function () {
         var yGraph=[];
         temp = 0;
         while(temp<yvals.length){
-            yGraph[temp]=320-Math.floor(yvals[temp]/yStep);
+            yGraph[temp]=200-Math.floor(yvals[temp]/yStep); //magic number.... canvas height/2
             temp++;
         }
-        console.log(yStep);
+        console.log(yvals);
         ctx.strokeStyle='black';
         ctx.lineCap='round';
         ctx.lineJoin=("round");
@@ -69,10 +69,10 @@ var graphcalc = (function () {
         //(x,y,dx, dy)
         context.clearRect(0,0,canvasJQ.width(), canvasJQ.height());
         //console.log(func);
-        func.val('');
+        func.val('sin(x)');
         
-        minX.val('');
-        maxX.val('');
+        minX.val('0');
+        maxX.val('6*pi');
     }
     function setup(div) {
         var wrapper=$("<div id=\"graph_wrapper\"></div>");

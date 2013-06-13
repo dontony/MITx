@@ -6,3 +6,9 @@ use classes, not id, in your own object
 animate (slowly change css)
 hide() and show()
 
+animate stacks for different alements, but does it linearly in one project
+find() only inside root tree
+
+use on(), not bind()
+
+target is the originator of the event.

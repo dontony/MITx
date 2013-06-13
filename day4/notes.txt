@@ -1,0 +1,8 @@
+.eq()
+.attr() is important
+.data() caches, dangerous
+use classes, not id, in your own object
+
+animate (slowly change css)
+hide() and show()
+

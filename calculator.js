@@ -89,8 +89,7 @@ var calculator = function(){
             throw "number expected";
         return operand;
     }
-    //evaluates a list of tokens as a linear calculator (does not take PEMDAS into mind yet)
-    
+    //evaluates a list of tokens as a linear calculator 
     function evaluate(tokens){
         if(tokens.length<1)
             throw "missing operand";

@@ -1,14 +1,85 @@
-#graph_canvas{
+.graph_canvas{
     border:solid 1px black;
-    background-color:#F0FFF0;
+    background-color:white;
 }
-#function_input{
+.function_input{
     font-family:monospace;
     font-weight:bold;
 }
 .graphcalc{
     width:440;
     padding:30;
-    background-color:lightblue;
+    background: linear-gradient(to bottom, #DFDFDF, #AEAEAE);
+    position: absolute;
+    border: 1px solid gray;
     
+}
+.calcBody {
+    
+}
+
+#screen {
+    height: 90px;
+    width: 374px;
+    background-color: #EFFACD;
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    border: 2px rgb(175, 181, 146);
+    border-style: solid;
+    box-shadow:
+        0 5px 4px 0px rgb(241, 241, 241),
+        0 -3px 4px 0px rgb(128, 128, 128),
+        -2px 0 4px 0px rgb(175, 175, 175),
+        2px 0 4px 0px rgb(175, 175, 175);
+}
+
+#screen div{
+    position: relative;
+    text-align: right;
+    margin-right: 45px;
+    margin-top: 3px;
+    font-size: 26px;
+    font-family: Lucida Sans,Lucida Sans Narrow,Verdana, monospace;
+}
+
+.calcRow button{
+    box-shadow:
+        0 1.5px 2px #F9F9F9,
+        inset 0px 5px 5px 0px #F1F1F1,
+        inset 0.5px -4.5px 5px 0px #5E5E5E;
+    background-color: #D4D4D4;
+    font-size: 24px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    width: 92px;
+    height: 52px;
+    margin-bottom: 10px;
+    margin-left:10px;
+}
+
+.calcRow button:hover{
+    background-color: #D6C5D5;
+    box-shadow:
+        0 1.5px 2px #F9F9F9,
+        inset 0.5px -4.5px 5px 0px #5E5E5E;
+}
+
+.calcRow button:active{
+    background-color: #939393;
+    box-shadow:
+        inset 0px 5px 5px 0px #5E5E5E;
+}
+
+
+.calcRow .wideButton{
+    width: 190px;
+    height: 50px;
+}
+.calcRow .tallButton{
+    width: 92px;
+    height: 114px;
+    position: absolute;
 }

@@ -1,6 +1,6 @@
 var graphcalc = (function () {
     var exports = {};  // functions,vars accessible from outside
-   var xvals=[]
+    var root=null;
    var yvals=[];
    var yGraph=[];
    var height;
@@ -8,11 +8,13 @@ var graphcalc = (function () {
    //returns the canvas of where you draw the graph and coordinates
     function graph(canvasDOM,expression,x1,x2) {
         /*… your code to plot the value of expression as x varies from x1 to x2 …*/
+        console.log(x1+' '+x2);
 		xvals=[];
 		yvals=[];
 		yGraph=[];
-        var expr_tree;
+        var expr_tree;//reset all variables to empty
         var graphCanvas=$("<canvas></canvas>")[0];
+
         graphCanvas.width=canvasDOM.width;
         graphCanvas.height=canvasDOM.height;
         var ctx = graphCanvas.getContext('2d');
@@ -35,6 +37,12 @@ var graphcalc = (function () {
             ctx.fillText(err,200,200);
             return;
         }
+
+        if(minX>=maxX){
+            var temp = minX;
+            minX=maxX;
+            maxX=temp;
+        }
         var xStep = (maxX-minX)/width;
         
         //TODO: change to a for
@@ -48,8 +56,8 @@ var graphcalc = (function () {
             yvals.push(calculator.evaluate(expr_tree,{x:xvals[index],
             e:Math.E,pi:Math.PI}));
         }
-        var minY = yvals[120];//randomized in case of holes in graphs... 1/sin(x) at 0 is NaN, so it messes everything up. 
-        var maxY = yvals[329];
+        var minY = Infinity;//randomized in case of holes in graphs... 1/sin(x) at 0 is NaN, so it messes everything up. 
+        var maxY = -Infinity;
         for(var index = 0; index<= yvals.length; index+=1){
             if(yvals[index]<minY){
                 minY=yvals[index];
@@ -58,25 +66,41 @@ var graphcalc = (function () {
                 maxY=yvals[index];
             }
         }
-        var yStep= 1.25*(maxY-minY)/height; //1.20 is to ensure the edges will be well-buffered
+        if(minY<-1000){
+            minY=-10;
+        }
+        if(maxY>1000){
+            maxY=10;
+        }
+        if(Math.abs(maxY-minY)<0.5){
+            maxY=minY+0.5;
+        }
+        var yStep= 1.25*(maxY-minY)/height; //1.25 is to ensure the edges will be well-buffered
         yGraph=[];
+        var interval=Math.abs(maxY-minY)/yStep;
         temp = 0;
         console.log(yStep);
+        console.log(interval);
         //TODO: CHANGE TO FOR LOOP
         while(temp<yvals.length){
-            yGraph[temp]=height/2-Math.floor(yvals[temp]/yStep); //magic number.... canvas height/2?
+            yGraph[temp]=Math.floor(height/10+interval+minY/yStep-yvals[temp]/yStep); //magic number.... canvas height/2?
             temp++;
         }
         //console.log(yGraph);
         ctx.strokeStyle='red';
-        ctx.lineWidth=3;
+        ctx.lineWidth=2;
         ctx.lineCap='round';
-        ctx.lineJoin=("round");	
+        ctx.lineJoin='round';	
         ctx.beginPath();
         
         ctx.moveTo(0, yGraph[0]);
         for(var i = 0; i<yGraph.length; i++){
-            ctx.lineTo(i, yGraph[i]);
+            if(yvals[i]<maxY&&yvals[i]>minY){
+                ctx.lineTo(i, yGraph[i]);
+                console.log(i+'     '+yGraph[i]);
+            }else if (i<=yGraph.length){
+                ctx.moveTo(i+1, yGraph[i+1]);
+            }
         }
         ctx.stroke();
         
@@ -98,7 +122,7 @@ var graphcalc = (function () {
             ctx.lineTo(width,i);
         }
 		ctx.stroke();
-		ctx.lineWidth=3;
+		ctx.lineWidth=2;
 		ctx.beginPath();
 		for(var i=0; i<yGraph.length-1; i+=height/10){
             //only labels every other line
@@ -111,7 +135,7 @@ var graphcalc = (function () {
         for(var i=0; i<yGraph.length-1; i+=width/20){
             //only labels every other line
             if(i%((width/5))==0){
-                ctx.fillText("x="+String(xStep*i+minX).substring(0,4), i, height/2+10);
+                ctx.fillText("x="+String(xStep*i+minX).substring(0,6), i, height/2+10);
             }
             ctx.moveTo(i, 0);
             ctx.lineTo(i,height);
@@ -184,8 +208,9 @@ var graphcalc = (function () {
 		
     }
     function setup(div, dheight, dwidth) {
-        var wrapper=$("<div id=\"graph_wrapper\"></div>");
-        var canvasJQ = $("<canvas id=\"graph_canvas\"></canvas>");
+        var root = div;
+        var wrapper=$("<div class=\"graph_wrapper calcBody\"></div>");
+        var canvasJQ = $("<canvas class=\"graph_canvas\"></canvas>");
         var canvasDOM = canvasJQ[0];
         canvasDOM.height=dheight;
         canvasDOM.width=dwidth;
@@ -201,28 +226,41 @@ var graphcalc = (function () {
         var inputHolder = $("<div>f(x):</div>");
         var minMaxHolder = $("<div>min x:</div>");
         
-        var inputFunction=$("<input></input>",{id:"function_input",type:"text",size:80});
+        var inputFunction=$("<input></input>",{class:"function_input",type:"text",size:80});
         inputHolder.append(inputFunction);
-        var inputMin=$("<input></input>",{id:"minX_input",type:"text"});
+        var inputMin=$("<input></input>",{class:"minX_input",type:"text"});
         minMaxHolder.append(inputMin);
         minMaxHolder.append("    max x:");
-        var inputMax = $("<input></input>",{id:"maxX_input",type:"text"});
+        var inputMax = $("<input></input>",{class:"maxX_input",type:"text"});
         minMaxHolder.append(inputMax);
         
-        var buttonDiv=$("<div></div>");
-        var plotButton=$("<button>Plot FunctionM</button>", {id:"plot_button"});
-        var clearButton=$("<button>Clear Graph</button>", {id:"clear_button"});
+        var buttonDiv=$("<div></div>", {class:"button_div"});
+        var plotButton=$("<button>Plot FunctionM</button>", {class:"plot_button"});
+        var clearButton=$("<button>Clear Graph</button>", {class:"clear_button"});
         buttonDiv.append(plotButton);
         buttonDiv.append(clearButton);
         
         
         var graphDOM;
-        plotButton.bind("click", function(){
+        plotButton.on("click", function(){
             ctx.clearRect(0,0,canvasJQ.width(), canvasJQ.height());
-            graphDOM=graph(canvasDOM, inputFunction.val(), inputMin.val(), inputMax.val());
+            var inputMinNum=inputMin.val();
+            var inputMaxNum=inputMax.val();
+            console.log(inputMinNum);
+            if(inputMin.val().length<1){
+                inputMiNum=0;
+                inputMin.val(0);
+            }
+            if(inputMax.val().length<1){
+                inputMaxNum=10;
+                inputMax.val(10);
+            }
+            console.log(inputMinNum);
+            console.log('button');
+            graphDOM=graph(canvasDOM, inputFunction.val(), inputMinNum, inputMaxNum);
             
         });
-        clearButton.bind("click", function(){
+        clearButton.on("click", function(){
             clear(canvasJQ, inputFunction, inputMin, inputMax);
         });
         canvasJQ.on("mousemove", function(event){
@@ -239,9 +277,53 @@ var graphcalc = (function () {
         inputDiv.append(minMaxHolder);
         inputDiv.append(buttonDiv);
         wrapper.append(inputDiv);
-        $(div).append(wrapper);
+
+        calcDiv=$('<div></div>', {class:"calc_div"});
+        var buttonsArr=['plot','clear', '<-','e','pi', 'sqrt', '^', 'sin', 'cos', 'tan', 'ln', 'x','neg','/','*','7','8','9', '-', '4', '5', '6','+', '1', '2', '3', '=', '0', '.'];
+        var row = $('<div></div>', {class:'calcRow'});
+        var regNum=/\d|\.'/;
+        var regOp=/[\+\/\*\-\(\)\^]/;
+        var regFunc=/sqrt|sin|cos|tan|ln|neg/;
+        for(var i in buttonsArr){
+            var s = buttonsArr[i];
+            var button = $('<button>'+s+'</button>');
+            if(s.match(regNum)){
+                console.log('num: '+s);
+                button.attr('class', 'numberButton');
+                if(s=='0'){
+                    button.attr('class', 'numberButton wideButton');
+                }
+            }else if (s.match(regOp)){
+                console.log('op: '+s);
+                button.attr('class', 'opButton');
+            }else if (s.match(regFunc)){
+                console.log('func: '+s);
+                button.attr('class', 'funcButton');
+            }else if (s=='='){
+                button.attr('class', 'equalsButton tallButton');
+            }else if(s=='<-'){
+                button.attr('class', 'backspace wideButton');
+            }
+            button.on('click', function(e){
+                console.log(e.target);
+                inputFunction.val(inputFunction.val()+$(e.target).text());
+            });
+            row.append(button);
+            if((i-2)%4==0){
+                calcDiv.append(row);
+                row=$('<div></div>', {class:'calcRow'});
+            }
+        }
+        calcDiv.append(row);
+        wrapper.append(calcDiv);
+        $(root).append(wrapper);
     }
     exports.setup = setup;
    
     return exports;
 }());
+$(document).ready(function() {
+    $('.graphcalc').each(function() {
+        graphcalc.setup(this, 400, 400);  
+    });
+});

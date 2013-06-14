@@ -6,10 +6,9 @@
  */
 var Inspector = function($) {
   exports = {};
-
+	
   // The root element of the inspector.
   	var root = null;
-	
   var template = ""
     + "<div class='tray'>"
     + "  <textarea class='text-editor'></textarea>"
@@ -41,6 +40,7 @@ var Inspector = function($) {
             n=0;
         }
       var selection=$(selectorStr).eq(n);
+      prev_target=selection;
       var html = selection.html();
       var textEditor=root.find(".text-editor");
       textEditor.val(html);
@@ -49,6 +49,8 @@ var Inspector = function($) {
   }
   
   function getCSS(selection){
+  //TODO: clear table, make table id, clear that tablecolor
+  
       var csscolor = selection.css('color');
       var cssbgcolor = selection.css('background-color');
       
@@ -79,6 +81,34 @@ var Inspector = function($) {
       console.log(cbgspan);
       console.log(cspan);
       
+      var cssTable = $('<table></table>');
+      //TODO: clear table, get table font color=black
+      cssTable.css('color','#000000');
+      
+      var row1=$('<tr></tr>');
+      row1.html('<td>color</td>');
+      var col1 = $('<td/>');
+      col1.append(cspan);
+      row1.append(col1);
+      var row2=$('<tr></tr>');
+      row2.html('<td>background-color</td>');
+      var col2 = $('<td/>');
+      col2.append(cbgspan);
+      row2.append(col2);
+      
+      cssTable.append("<tr><td>font</td><td>"+cssfont+"</td></tr>");
+      cssTable.append("<tr><td>width</td><td>"+csswidth+"</td></tr>");
+      cssTable.append("<tr><td>height</td><td>"+cssheight+"</td></tr>");
+      cssTable.append("<tr><td>top</td><td>"+csstop+"</td></tr>");
+      cssTable.append("<tr><td>left</td><td>"+cssleft+"</td></tr>");
+      cssTable.append("<tr><td>border</td><td>"+cssborder+"</td></tr>");
+      cssTable.append("<tr><td>margin</td><td>"+cssmargin+"</td></tr>");
+      cssTable.append("<tr><td>padding</td><td>"+csspadding+"</td></tr>");
+      cssTable.append(row1);
+      cssTable.append(row2);
+      
+      
+      
       
       var cssText=root.find(".property-list");
       var cssProperties='width: ' + csswidth+'</br>height: ' 
@@ -87,9 +117,10 @@ var Inspector = function($) {
         + csstop+'</br>left: ' + cssleft+''  
         +'</br>font: ' + cssfont;
       
-      cssText.html(cssProperties);
-      cssText.append(cbgspan);
-      cssText.append(cspan);
+      //cssText.html(cssProperties);
+      //cssText.append(cbgspan);
+      //cssText.append(cspan);
+      cssText.append(cssTable);
   }
   
   var changeHTMLLive=function(event){
@@ -99,43 +130,52 @@ var Inspector = function($) {
     var html = textEditor.val(); //gets whatever's in text box
     //find the header that was in the selection box
     //go to whatever n was in the nth input box
-    var selector=root.find(".selector").val();
+    /*var selector=root.find(".selector").val();
     var n = parseInt(root.find(".nth").val());
     if (isNaN(n)){
         n=0;
     }
     console.log(selector);
     console.log(n);
-    var selection = $(selector).eq(n);
-    $(selection).html(html);
+    var selection = $(selector).eq(n);*/
+    var selection=prev_target;
+    selection.html(html);
   }
   
+  var prev_border=null;
   var prev_target=null;//for tracking the previous higlighted object, so we have the ability to take the border off
+  var visualSel=false;
   var visualSelection=function(event){
       if(visualSel){
       		target = $(event.target);
-      		if(prev_target){
-	      		console.log('targeting');
-	      		
-	      		if(target==prev_target){
-	      			console.log('tracking target');
-	      		}else{
-	      			console.log('target changed');
-	      			prev_target.css('border', 'none');
+              if(prev_target){
+                  console.log('targeting');
+                  if(target[0]===prev_target[0]){
+                      console.log('tracking target');
+                    }else{
+                        console.log('target changed');
+                        prev_target.css('border',prev_border);
+                        prev_border=target.css('border');
+                        
+                        prev_target.off('click');
+                        target.on('click', saveInEditor);
+                        console.log(target);
 	      		}
 	      		target.css('border', 'solid 5px red');
 	      		prev_target=target;
 	      		
 				      		
-	      		event.stopPropagation();
+	      		
       		}
       		else{
       			console.log('first target');
       			target = $(event.target);
       			console.log(target);
+                prev_border=target.css('border');
       			target.css('border', 'solid 5px red');
 	      		prev_target=target;
       		}
+            event.stopPropagation();
 	      var html = target.parent().html();
 	      var textEditor=root.find(".text-editor");
 	      textEditor.val(html);
@@ -143,7 +183,22 @@ var Inspector = function($) {
       }
   }
   
-  var visualSel=false;
+  function saveInEditor(e){
+  	e.stopPropagation();
+  	visualSel=false;
+  	if(prev_target!=null){
+  		prev_target.off('click');
+        prev_target.css('border',prev_border);
+  		//var selectorBox=root.find(".selector");
+  		//selectorBox.val(prev_target.attr('class'));
+  		
+  		//console.log(selectorBox.val());
+       
+  	}
+  	 
+  }
+  
+  
   /*
    * Construct the UI
    */

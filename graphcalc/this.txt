@@ -1,0 +1,2 @@
+newList=list.filter(function)
+Math.min.apply(null, list)

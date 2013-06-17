@@ -14,7 +14,9 @@
     border: 1px solid gray;
     
 }
-.calcBody {
+.calc_div {
+	float:right;
+	position:relative;
     
 }
 

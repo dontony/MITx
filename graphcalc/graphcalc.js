@@ -301,11 +301,12 @@ var graphcalc = (function () {
                 button.attr('class', 'funcButton');
             }else if (s=='='){
                 button.attr('class', 'equalsButton tallButton');
-            }else if(s=='<-'){
+            }else if(s==='<-'){
                 button.attr('class', 'backspace wideButton');
             }
             button.on('click', function(e){
                 console.log(e.target);
+                if($(e.target).text().match(regOp)||$(e.target).text().match(regNum))
                 inputFunction.val(inputFunction.val()+$(e.target).text());
             });
             row.append(button);

@@ -1,20 +1,8 @@
 var quiz = (function(){
    var exports = {};
    
-   var questions = [{
-                      question_text:"what is the air speed of an unladen swallow?", 
-                      answers:["32 mph", "42 kph","16 m/s","african or european?"], 
-                      hints:['think about the type of swallow...', 'think about the type of swallow...', 'think about the type of swallow...', ''],
-                    }, 
-                    {
-                      question_text:"on 1969, what is the most important thing that happened??", 
-                      answers:["woodstock, duh", "ummm goldwater was stupid?","Moon landing!","end of civil war?"], 
-                      hints:['maybe for music but not the world...', 'could be more important', '', 'wrong century, and wrong year'],
-                    }];
-   //Holds a DOM object  with the question text, 
-   //ex. question.question_text="what is the air speed of an unladen swallow?" 
-   //    question.answers=["32 mph", "42 kph","16 m/s","african or european?"]
-   //    question.solutionIndex=4;
+  var questionsLength=0;
+   
    
    var answers = [];
    //holds the answers of the student for comparison
@@ -24,7 +12,8 @@ var quiz = (function(){
    var currentQuestionIndex=0;
    var currentWrapperDiv=null;
    var userName='';
-   var quizInstance;
+   var quizInstance; //Parse Quiz instance
+   var currentQuestionObj;// JSON current question obj
    // function to check answer, takes in 
    //q, question index
    //a, student answe index
@@ -83,7 +72,10 @@ var quiz = (function(){
             username = quizInstance.get("username");
             currentQuestionIndex = quizInstance.get("currentQuestionIndex");
             console.log(currentQuestionIndex);
-            displayQuestion();
+
+            
+            getCurrentQuestion();
+
           },
           error: function(object, error) {
             // The object was not retrieved successfully.
@@ -105,7 +97,7 @@ var quiz = (function(){
             // Execute any logic that should take place after the object is saved.
             alert('New object created with objectId: ' + quizInstance.id);
             console.log(quizInstance);
-            displayQuestion();
+            getCurrentQuestion();
         localStorage.setItem('ParseID', quizInstance.id);
           },
           error: function(quizInstance, error) {
@@ -118,17 +110,40 @@ var quiz = (function(){
       } 
 
     }
+    var req=$.ajax({
+                url:'http://localhost:8080/getNumber', 
+                //data:{'username':username}
+            });
+            req.done(function(msg){
+              console.log(msg+' from server');
+              questionsLength=parseInt(msg);
+            });
        
    }
    function getCurrentQuestion(){
-       return questions[currentQuestionIndex];
+       //return questions[currentQuestionIndex];
+      var req=$.ajax({
+                async:false,
+                url:'http://localhost:8080/getQuestion', 
+                data:{'username':username, 'questionIndex':currentQuestionIndex}
+            });
+      req.done(function(msg){
+        console.log(msg + 'from server');
+        currentQuestionObj=JSON.parse(msg)
+        displayQuestion(currentQuestionObj);
+        return JSON.parse(msg);
+      });
+
    }
-   function displayQuestion(){
-       if(currentQuestionIndex<questions.length){
+   function displayQuestion(questionObj){
+        while(!questionsLength){
+          console.log('waiting on server');
+        }
+       if(currentQuestionIndex<questionsLength){
        var wrapperDiv=$('<div></div>', {class:'questionWrapper'});
        console.log(currentQuestionIndex);
            var questionDiv=$('<div></div>', {class:'questionDiv'});
-           var questionObj=getCurrentQuestion();
+           
            var questionIndex=currentQuestionIndex+1;
            questionDiv.append(questionIndex+'. '+questionObj.question_text);
            var questionName = 'question'+String(questionIndex);
@@ -164,11 +179,10 @@ var quiz = (function(){
    }
     function nextQuestion(event){
       incrementQuestionIndex();
-      if(currentQuestionIndex<questions.length){
-        currentWrapperDiv.find('.nextQuestionButton').attr('disabled', 'disabled');
-        currentWrapperDiv.find('.nextQuestionButton').css('visibility', 'hidden');
-
-       displayQuestion();
+      currentWrapperDiv.find('.nextQuestionButton').attr('disabled', 'disabled');
+      currentWrapperDiv.find('.nextQuestionButton').css('visibility', 'hidden');
+      if(currentQuestionIndex<questionsLength){
+       getCurrentQuestion();
        console.log(currentQuestionIndex);
     }
     else{
@@ -177,20 +191,19 @@ var quiz = (function(){
     console.log('done');
    }
    function checkAnswer(event){
-    console.log('checkAnswer');
+      console.log('checkAnswer');
       var questionName = 'question'+String(currentQuestionIndex+1);
            var userSelect=currentWrapperDiv.find('input[name='+questionName+']:checked');
            var userIndex=userSelect.attr('data_index');
-           var questionObj=getCurrentQuestion();
            var req=$.ajax({
-                url:'http://localhost:8080/', 
-                data:{id:10,'userIndex':userIndex, 'username':username}
+                url:'http://localhost:8080/checkAnswer', 
+                data:{id:10,'userAnswer':userIndex, 'username':username, 'questionIndex':currentQuestionIndex}
             });
             req.done(function(msg){
               console.log(msg);
             
-           var correct=checkCorrect(currentQuestionIndex, userIndex);
-
+           //var correct=checkCorrect(currentQuestionIndex, userIndex);
+           var correct=parseBoolean(msg);
            var feedback=userSelect.parent().children('.feedback');
            if(correct){
             console.log('correct');
@@ -207,13 +220,16 @@ var quiz = (function(){
           }else
            {
             console.log('incorrect');
-            feedback.text(' incorrect, ' + questionObj.hints[userIndex]);
+            feedback.text(' incorrect, ' + currentQuestionObj.hints[userIndex]);
             feedback.addClass('incorrectAnswer');
             decrementScore();
            }
          });
        
   }  
+  function parseBoolean(s){
+    return s==='true';
+  }
    exports.setup=setup;
    
    return exports;

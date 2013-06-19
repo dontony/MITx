@@ -1,0 +1,16 @@
+.chart-container{
+	border:solid 2px black;
+}
+
+.chart text{
+	background-color: violet;	
+	fill:lightblue;
+	text-align: right;
+	font:20px monospace;
+	/*padding:3px 0px 3px 3px;*/
+	/*margin:1px;*/
+}
+.chart rect{
+	fill:purple;
+	stroke:white;
+}

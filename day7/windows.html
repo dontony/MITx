@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Windows.com mockup</title>
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="day7.css" rel="stylesheet" media="screen">
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class='navbar navbar-static-top'>
+			<div class="navbar-inner">
+				<ul class='nav'>
+					<li><a class='brand pull-left' href='#'>Windows</a></li>
+				</ul>
+				<form class="navbar-search pull-right">
+				  <input type="text" class="search-query" placeholder="Search">
+				</form>
+			</div>
+			<div class="navbar-inner">
+                <ul class="nav nav-tabs"> <!-- nav makes the list sideways-->
+                    <li><a href="#meet" data-toggle='tab'>MEET WINDOWS</a></li>
+                    <li><a href="#download" data-toggle='tab'>DOWNLOAD AND SHOP</a></li>
+                    <li><a href="#how-to" data-toggle='tab'>HOW TO</a></li>
+                    <li><a href="#support" data-toggle='tab'>SUPPORT</a></li>
+					<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">LOGIN</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						<li><a> Login here</a></li>
+						<li><a> New User: Sign UP</a></li>
+                	</ul>
+                </ul>
+            </div>
+		</div>
+		<div id='picslides' class='carousel slide pull-center text-center'data-interval=0> 
+			<ol class='carousel-indicators'>
+				<li data-target='#meet' data-slide-to='0' class='active'></li>
+				<li data-target='#download' data-slide-to='1'></li>
+				<li data-target='#how-to' data-slide-to='2'></li>
+				<li data-target='#support' data-slide-to='3'></li>
+			</ol>
+			<!-- Carousel items -->
+			  <div class="carousel-inner">
+			    <div class="active item" style='background-color:#ffd800;'	>
+			    	<!--img class='image' src='night_sky.png'alt-->
+			    	<div class='carousel-caption' style='background-color:#ffd800;'>
+			    		<img class="featurette-image pull-right" src="ipadvsurface.png">
+			    		<div class='featurette'>
+			    			<h1 class='featurette-heading'> Head to head</h1>
+			    			<p class='lead'> see how windows tablets stack up</p>
+			    			<button class='btn btn-large'>Compare</button>
+			    		</div>
+			    	</div>
+			    	
+			    </div>
+			    <div class="item" style='background-color:#ffd800;'	>
+			    	<img class='image' src='night_sky.png'alt>
+			    	<div class='carousel-caption' style='background-color:rgba(0,0,0,0);'>
+			    		<img class="featurette-image pull-left" src="ipadvsurface.png">
+			    		<div class='featurette'>
+			    			<h1 class='featurette-heading'> Head to head</h1>
+			    			<p class='lead'> see how windows tablets stack up</p>
+			    			<button class='btn btn-large'>Compare</button>
+			    		</div>
+			    	</div>
+			    	
+			    </div>
+			    <div class="item">
+			    	<img class='image' src='space.png'alt>
+			    	<div class='carousel-caption' style='background-color:#888888;'>
+			    		<div class='row'>
+			    		<div class='span6'>
+			    			<h1> Head to head</h1>
+			    			<p> see how windows tablets stack up</p>
+			    			<button class='btn btn-large'>Compare</button>
+			    		</div>
+			    		<div class='span5'>
+			    			<img src='ipadvsurface.png'></img>
+			    		</div>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<img class='carousel-image' src='elephant.png'></img>
+			    </div>
+			    <div class="item">
+			    	<img class='carousel-image' src='wind+waker+boat.png'></img>
+			    </div>
+			  </div>
+			  <!-- Carousel nav -->
+			  <a class="carousel-control left" href="#picslides" data-slide="prev">&lsaquo;</a>
+			  <a class="carousel-control right" href="#picslides" data-slide="next">&rsaquo;</a>
+		</div>
+
+
+		<div class='row'>
+		<div class='span2'>
+			<ul class="nav nav-list">
+			  <li class="nav-header">List header</li>
+			  <li class="active"><a href="#">Home</a></li>
+			  <li><a href="#">Library</a></li>
+			  ...
+			</ul>
+		</div>
+		<div class='span2'>
+			<ul class="nav nav-list">
+			  <li class="nav-header">List header</li>
+			  <li class="active"><a href="#">Home</a></li>
+			  <li><a href="#">Library</a></li>
+			  ...
+			</ul>
+		</div>
+		</div>
+	</div>
+
+</body>

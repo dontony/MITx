@@ -1,0 +1,34 @@
+ul.nav li.dropdown:hover > ul.dropdown-menu{
+    display: block;    
+    margin: 0;
+}
+ul.nav li.dropdown:hover{
+	background-color: rgb(229, 229, 229);
+}
+body{
+	padding-top:40px;
+}
+div.item{
+	overflow:hidden;
+	height:500px; 
+	vertical-align: middle;
+}
+div.item:hover
+{
+  /*border:1px solid #FFFFFF;*/
+}
+div.row{
+	z-index:20;
+}
+div.centered{
+	vertical-align: middle !important;
+	display: inline-block !important;
+	float: none !important;
+	height:100%;
+}
+div.span6{
+	z-index:20;
+}
+.featurette-heading{
+	padding-top:120px;
+}

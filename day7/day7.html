@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twitter Bootstrap Tutorial</title>
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="day7.css" rel="stylesheet" media="screen">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container text-center">
+		<div class='navbar navbar-fixed-top'>
+			<div class="navbar-inner">
+			<a class="brand" href="#">Logo</a>
+                <ul class="nav nav-tabs"> <!-- nav makes the list sideways-->
+                    <li class="active" ><a href="#home" data-toggle='tab'>Home</a></li>
+                    <li><a href="#about" data-toggle='tab'>About</a></li>
+                    <li><a href="#contact" data-toggle='tab'>Contact</a></li>
+					<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown trigger</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+					<li><a> Click</a></li>
+					<li><a> No Click</a></li>
+
+                </ul>
+            </div>
+		</div>
+		<!--ul class="nav nav-tabs"> 
+                    <li class="active"><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+					<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown trigger</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+					<li><a> Click</a></li>
+					<li><a> No Click</a></li>
+
+               		</ul>
+        </ul-->
+		<div id='tabs' class='tab-content'>
+
+			<h1>Twitter Bootstrap</h1>
+			<p>This is the first example!</p>
+			
+			<div class='tab-pane active' id='home'>
+				<div class='row text-error' id='home'>
+				<div class='span4'>
+					<h2>Intro</h2>
+				</div>
+				<div class='span2'>
+					<blockquote class = 'pull-right'>
+					<h2>to</h2>
+					<small>you <cite title="Source Title">Source Title</cite></small>
+					</blockquote>
+				</div>
+				<div class='span1'>
+					<h2>a</h2>
+				</div>
+				<div class='span5'>
+					<h2>computer</h2>
+				</div>
+				</div>
+				<div>
+
+				<pre class='text-left'>
+		function tokenize(string){
+		        var regex = /\d*[\.]\d+|\d+|[\+\/\*\-\(\)]|sin|cos|tan|ln|sqrt/g;
+		        var tokens = string.match(regex);
+		        return tokens;
+		        //g is a flag, means global match
+		    }
+				</pre>
+				</div>
+			</div>
+		<div id='about' class='tab-pane'>
+			<div class='row text-warning'>
+				<div class='span2'>
+					<h2>Intro</h2>
+				</div>
+				<div class='span2'>
+					<h2>to</h2>
+				</div>
+				<div class='span3'>
+					<h2>a</h2>
+				</div>
+				<div class='span5'>
+					<h2>computer</h2>
+				</div>
+			</div><div class='row text-info'>
+				<div class='span4'>
+					<h2>Intro</h2>
+				</div>
+				<div class='span4'>
+					<h2>to</h2>
+				</div>
+				<div class='span1'>
+					<h2>a</h2>
+				</div>
+				<div class='span3'>
+					<h2>computer</h2>
+				</div>
+			</div>
+		</div>
+		<div class='tab-pane' id='contact'>
+		<div class='row' >
+			<div class='span4'>
+				<h2>Intro</h2>
+			</div>
+			<div class='span2'>
+				<h2>to</h2>
+			</div>
+			<div class='span1'>
+				<h2>a</h2>
+			</div>
+			<div class='span5'>
+				<h2>computer</h2>
+			</div>
+			<a href="#popup" role="button" class="btn" data-toggle="modal">Login</a>
+ 
+			<!-- Modal -->
+			<div id="popup" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="popupLabel" aria-hidden="true">
+			    <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h3 id="popupLabel">Login</h3>
+			    </div>
+			    <div class="modal-body">
+			        <p>Enter login details...</p>
+			    </div>
+			    <div class="modal-footer">
+			        <button class="btn btn-error" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			        <button class="btn btn-primary">Login</button>
+			    </div>
+			</div>
+		</div>
+		</div>
+	</div>
+    
+</body>
+</html> 

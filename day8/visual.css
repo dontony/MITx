@@ -2,15 +2,25 @@
 	border:solid 2px black;
 }
 
-.chart text{
-	background-color: violet;	
+.chart text.bar_label{
 	fill:lightblue;
 	text-align: right;
-	font:20px monospace;
+	font:15px monospace;
+	/*padding:3px 0px 3px 3px;*/
+	/*margin:1px;*/
+}
+
+.chart text.y_label{	
+	fill:blacj;
+	text-align: right;
+	font:15px monospace;
 	/*padding:3px 0px 3px 3px;*/
 	/*margin:1px;*/
 }
 .chart rect{
 	fill:purple;
 	stroke:white;
+}
+.chart line{
+	stroke:gray;
 }

@@ -46,8 +46,12 @@ my_http.createServer(function(request,response){
     }
     else if(pathname==='/getQuestion'){
       
-
-      response.write(JSON.stringify(questions[questionIndex]));
+      if(questionIndex<questions.length){
+        response.write(JSON.stringify(questions[questionIndex]));
+      }
+      else{
+        response.write('no string here');
+      }
 
     }else if(pathname==='/getNumber'){
       console.log(String(questions.length));

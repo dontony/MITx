@@ -15,11 +15,12 @@ var chart_width=outer_width-margin.left-margin.right;
 var chart_height=outer_height-margin.top-margin.bottom;
 
 var y_stack_max=d3.max(stacked_data, function(layer){return d3.max(layer, function(point){return point.y+point.y0});});
+var y_group_max=d3.max(stacked_data, function(layer){return d3.max(layer, function(point){return point.y});});
 
 var x_scale = d3.scale.ordinal().domain(d3.range(data[0].length))
 	.rangeBands([0, chart_width]);
 var y_scale = d3.scale.linear().domain([0, y_stack_max])
-	.range([chart_height,0]);
+	.range([chart_height,0]); //y_scale flipped because of the flipping of the range
 
 
 var chart = d3.select(".chart")
@@ -55,13 +56,35 @@ var layer_groups=chart.selectAll('.layer').data(stacked_data)
 	.enter().append('g')
 	.attr('class',  'layer');
 
-chart.selectAll("rect")
-	.data(data).enter().append("rect")
-	.attr("x", function(d, i){return x_scale(i);}) //
-	.attr("y",y_scale) //
-	.attr("width", x_scale.rangeBand())
-	.attr("height", function(d, i){return chart_height-y_scale(d);})
+var rects = layer_groups.selectAll('rect').data(function(d){return d;})
+	.enter().append('rect')
+	.attr('x', function(d,i){return x_scale(i)})
+	.attr('y', function(d,i){return y_scale(d.y+d.y0)})
+	.attr('height', function(d,i){return y_scale(d.y0) - y_scale(d.y + d.y0)})
+	.attr('width', x_scale.rangeBand())
+	.attr('fill', 'purple')
 	;
+
+function goGrouped(){
+	y_scale.domain([0, y_group_max]);
+	rects.transition()
+		.duration(1000)
+		.delay(function(d,i){return i * 10;})
+		.attr('x', function(d, i, j){ return x_scale(i)+x_scale.rangeBand()*j/(stacked_data.length);})
+		.attr('width', x_scale.rangeBand()/stacked_data.length)
+		.attr('y', function(d){return y_scale(d.y)})
+		.attr('height', function(d){return chart_height-y_scale(d.y);})
+		.attr('fill', function(d,i,j){ console.log(j*250/stacked_data.length );return 'rgb(100,'+j*250/stacked_data.length +',150)'})
+	;
+
+}
+// chart.selectAll("rect")
+// 	.data(data).enter().append("rect")
+// 	.attr("x", function(d, i){return x_scale(i);}) //
+// 	.attr("y",y_scale) //
+// 	.attr("width", x_scale.rangeBand())
+// 	.attr("height", function(d, i){return chart_height-y_scale(d);})
+// 	;
 
 // chart.selectAll(".bar_label").data(data)
 // 	.enter().append("text").attr('class', 'bar_label')

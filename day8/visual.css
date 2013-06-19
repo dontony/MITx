@@ -11,14 +11,14 @@
 }
 
 .chart text.y_label{	
-	fill:blacj;
+	fill:black;
 	text-align: right;
 	font:15px monospace;
 	/*padding:3px 0px 3px 3px;*/
 	/*margin:1px;*/
 }
 .chart rect{
-	fill:purple;
+	/*fill:purple;*/
 	stroke:white;
 }
 .chart line{

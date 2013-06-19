@@ -1,54 +1,28 @@
-// var chart = $('<div></div>').addClass('chart');
-// $('.chart-container').append(chart);
-var data=[20,15,50,80,70,150,90,040,60,10,30];
+//var data=data[3].map(function(d){return d.y});
 
-//data.forEach(function(d){chart.append(d)});
-// data.forEach(function(d){chart.append($('<div></div>').css('width', d*10+'px').text(d))})
-
-//d3 two big ideas, live listening in on changing data, manipulating data that
-//doesn't exist yet.
-// var x_scale=d3.scale.linear().domain([0, d3.max(data)]).range(['0%', '80%']);
-// // var y_scale=d3.scale.ordinal().domain(d3.keys(data)).rangeBands([0, chart_height]);
-// var y_scale = d3.scale.ordinal().domain(d3.keys(data)).rangeBands([0, chart_height]);
-// console.log(d3.keys(data));
-// console.log(y_scale(3));
+var stack=d3.layout.stack();
+var stacked_data=stack(data);
+console.log(stacked_data)
 var outer_height=300;
-
 var outer_width=500;
-// var bar_height=chart_height/data.length;
-// var chart=d3.select('.chart-container').append('svg').attr('class', 'chart');
-
-// chart.selectAll('rect').data(data).enter().append('rect')
-// 	.attr('width', x_scale)
-// 	.attr('height', bar_height)
-// 	.attr('y', function(d, i){return y_scale(i);});
-// 	// .text(function(d){return String(d)});
-
-// chart.selectAll('text').data(data).enter().append('text')
-// 	.text(function(d){return d;})
-// 	.attr('y', function(d,i){return 1+y_scale(i)+y_scale.rangeBand()/2;})
-// 	.attr('dx', -3)
-// 	.attr('dy', '0.25em')
-// 	.attr('text-anchor', 'end')
-// 	.attr('height', bar_height)
-// 	.attr('x', x_scale)
-// 	;
 //enter for new divs, update for all divs
 //select all of something, enter it, then append it again. you're building up the thing that doesn't exist yet. 
 
-var margin={top:20, right:20, bottom:20, left:30};
+var margin={top:20, right:20, bottom:20, left:50};
 
 
 var chart_width=outer_width-margin.left-margin.right;
 var chart_height=outer_height-margin.top-margin.bottom;
 
-var x_scale = d3.scale.ordinal().domain(d3.keys(data))
+var y_stack_max=d3.max(stacked_data, function(layer){return d3.max(layer, function(point){return point.y+point.y0});});
+
+var x_scale = d3.scale.ordinal().domain(d3.range(data[0].length))
 	.rangeBands([0, chart_width]);
-var y_scale = d3.scale.linear().domain([0, d3.max(data)])
+var y_scale = d3.scale.linear().domain([0, y_stack_max])
 	.range([chart_height,0]);
 
 
-var chart = d3.select(".chart-container")
+var chart = d3.select(".chart")
 		.append("svg")
 			.attr("class", "chart")
 			.attr("height", outer_height)
@@ -77,6 +51,9 @@ chart.selectAll('.y_label')
 	.text(String)
 	;
 
+var layer_groups=chart.selectAll('.layer').data(stacked_data)
+	.enter().append('g')
+	.attr('class',  'layer');
 
 chart.selectAll("rect")
 	.data(data).enter().append("rect")
@@ -86,13 +63,13 @@ chart.selectAll("rect")
 	.attr("height", function(d, i){return chart_height-y_scale(d);})
 	;
 
-chart.selectAll(".bar_label").data(data)
-	.enter().append("text").attr('class', 'bar_label')
-	.attr("x", function(d, i) {return x_scale(i) + x_scale.rangeBand()/2; })
-	.attr("y",  function(d, i){return y_scale(d)+3;})
-	.attr("dx", 0)
-	.attr("dy", "1em")		
-	.attr("text-anchor", "middle")
-	.text(String)
-	;
+// chart.selectAll(".bar_label").data(data)
+// 	.enter().append("text").attr('class', 'bar_label')
+// 	.attr("x", function(d, i) {return x_scale(i) + x_scale.rangeBand()/2; })
+// 	.attr("y",  function(d, i){return y_scale(d)+3;})
+// 	.attr("dx", 0)
+// 	.attr("dy", "1em")		
+// 	.attr("text-anchor", "middle")
+// 	.text(String)
+// 	;
 

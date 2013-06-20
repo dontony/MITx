@@ -6,7 +6,7 @@ var knapsack=function(){
 		var blocks_on_left=0; //each item will fit in a block, 4 blocks on each row of the container
 		var blocks_on_right=0; //each item will fit in a block, 4 blocks on each row of the container
 		var block_size;
-		var size;
+		var sizeBar;
 		var value;
 		setup(div, model);
 		
@@ -14,9 +14,10 @@ var knapsack=function(){
 			var width=$(wrapper).width()/2-20;
 			block_size=width/4;
 
-			size=$('<div></div>').addClass('progress');
-			size.progressbar({max:model.getMaxSize});
-			size.progressbar('enable');
+			var size=$('<div></div>').addClass('progress');
+			size.progressbar({max:model.getMaxSize()});
+			sizeBar=size.progressbar('widget');
+			sizeBar.progressbar('enable');
 
 			left=$('<div></div>').addClass('left container pull-left');
 			
@@ -53,7 +54,14 @@ var knapsack=function(){
 				hoverClass: "hover",
 				tolerance: "touch",
 				drop: function (event, ui){
-
+					var item_name=(ui.helper.attr('alt'));
+				
+					if(model.removeFromKS(item_name)){
+						console.log('escape');
+					}else{
+						console.log(ui);
+						ui.helper.animate({'left':0,'top':0}, 500);
+					}
 				}
 
 			});
@@ -90,12 +98,30 @@ var knapsack=function(){
 			var div=$('.item').filter(function(i, e){return $(e).attr('alt')==event.item.name})
 			console.log(div);
 			if(event.item.inKS){
+				var oldLeft=div.offset().left;
+				var oldTop=div.offset().top;
 				div.detach();
-				div.css('left',0);
-				div.css('top', 0);
-				right.append(div)
+				
+				var actualLeft=oldLeft+parseInt(div.css('left'));
+				var actualTop=oldTop+parseInt(div.css('top'));
+
+				right.append(div);
+				var newLeft=div.offset().left;
+				var newTop=div.offset().top;
+				console.log(div.offset().left-right.offset().left)
+				div.css('left', actualLeft-newLeft);
+				div.css('top', actualTop-newTop);
+					
+				
+				div.animate({'left':0,'top':0}, 500);
 			}
-			size.progressbar('value',event.item.size);
+			console.log(event.size);
+			sizeBar.progressbar({value:event.size});
+			if(event.isFull){
+				right.addClass('full');
+			}else{
+				right.removeClass('full');
+			}
 
 		}
 
@@ -217,6 +243,6 @@ var knapsack=function(){
 $(document).ready(function(){
 	$('.knapsack').each(function(i, dom){
 		console.log(dom)
-		knapsack.setup(dom, 400);
+		knapsack.setup(dom);
 	});
 });

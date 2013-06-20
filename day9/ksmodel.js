@@ -28,17 +28,18 @@ function Model(list, size, length){
 	}
 
 	function addToKS(name){
-		var toAdd=list.filter(function(e, i){return e.name==name})[0];
-		if(toAdd){
-			if(toAdd.size+ks_size<=max_size&&1+knapsack.length<=max_length){
+		var item=objects.filter(function(e, i){return e.name==name})[0];
+	
+		if(item){
+			if(item.size+ks_size<=max_size&&1+knapsack.length<=max_length){
 
-				knapsack.push(toAdd);
-				ks_size+=toAdd.size;
-				ks_value+=toAdd.value;
-				toAdd.inKS=true; //TODO doublecheck if inKS is maintained
-				event_handler.trigger();
+				knapsack.push(item);
+				ks_size+=item.size;
+				ks_value+=item.value;
+				item.inKS=true; //TODO doublecheck if inKS is maintained
+				
 				console.log(ks_size);
-				event_handler.trigger('added', {item:toAdd, size:ks_size, value:ks_value});
+				event_handler.trigger('added', {item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
 
 				return true;
 			}			//update event handler 
@@ -48,7 +49,22 @@ function Model(list, size, length){
 	}
 
 	function removeFromKS(name){
+		var index;
+		var item=knapsack.filter(function(e, i){index=i;return e.name==name})[0];
+		console.log(index)
+		if(item){
+				knapsack.splice(index, 1);
+				ks_size-=item.size;
+				ks_value-=item.value;
+				item.inKS=false; //TODO doublecheck if inKS is maintained
+				event_handler.trigger();
+				console.log(ks_size);
+				event_handler.trigger('removed', {item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
 
+				return true;
+			
+		}
+		return false;
 	}
 
 	function getItems(){
@@ -63,6 +79,9 @@ function Model(list, size, length){
 	function getSize(){
 		return ks_size
 	}
+	function getMaxSize(){
+		return max_size;
+	}
 	var exports={};
 	exports.list=list;
 	exports.getItems=getItems;
@@ -71,6 +90,7 @@ function Model(list, size, length){
 	exports.removeFromKS=removeFromKS;
 	exports.getValue=getValue;
 	exports.getSize=getSize;
+	exports.getMaxSize=getMaxSize;
 	exports.on=event_handler.on;
 	return exports;
 };

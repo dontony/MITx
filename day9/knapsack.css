@@ -1,0 +1,27 @@
+img.overlay{
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	left:0;	
+	top:0;
+}
+
+div.item{
+	float:left;
+	cursor: move;
+	z-index: 10;
+}
+
+div.left{
+	border:solid 3px blue;
+	background-color: rgba(70,150,250,.5);
+}
+div.right{
+	border:solid 3px green;
+	background-color: rgba(70,250,150,.5);
+}
+div.full{
+	border:solid 3px red;
+	background-color: rgba(250, 70,150,.5);
+}

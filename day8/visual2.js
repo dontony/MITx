@@ -1,5 +1,5 @@
-var outer_width = 960,
-    outer_height = 500;
+var outer_width = 500,
+    outer_height = 250;
 var margin={top:20, right:20, bottom:20, left:50};
 
 
@@ -23,25 +23,27 @@ var line=[ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
 
 var p0f={'x':p0[0], 'y':p0[1]};
 var p1f={'x':p1[0], 'y':p1[1]};
-var arcLine=[p0f,{'x':p0[0], 'y':p1[1]}, p1f];
+var arcLine=[p0f,/*{'x':p0[0], 'y':p1[1]},*/ p1f];
 
 var lineFunction = d3.svg.line()
   .x(function(d) { return d.x; })
   .y(function(d) { return d.y; })
-  .interpolate("bundle ");
+  .interpolate("bundle");
 
-console.log(lineFunction(arc));
-var radius=20;  
+var radius=Math.sqrt((p1[0]-p0[0])*(p1[0]-p0[0])+(p1[1]-p0[1])*(p1[1]-p0[1]))/2;  
+console.log(radius);
 
 
 var arc = d3.svg.arc()
-    .innerRadius(50)
-    .outerRadius(70)
-    .startAngle(0) //converting from degs to radians
-    .endAngle(Math.PI) //just radians
+    .innerRadius(radius-1)
+    .outerRadius(radius)
+    .startAngle(Math.tan((Math.abs(p0[1]-p1[1]))/(Math.abs(p0[0]-p1[0])))+Math.PI/4) //converting from degs to radians
+    .endAngle(Math.tan(-(Math.abs(p0[1]-p1[1]))/(Math.abs(p0[0]-p1[0])))-Math.PI/2) 
     ;
+
 var mid=[(p1[0]+p0[0])/2, (p1[1]+p0[1])/2];
-console.log(mid)
+console.log(arc())
+
 svg.append("path")
     .attr("d", arc)
     .attr("transform", "translate("+mid+")")
@@ -64,7 +66,7 @@ svg.selectAll(".endpoint")
     .attr("r", 4.5);
 
 svg.selectAll(".tick")
-    .data(d3.range(-.75, 1.25, .05))
+    .data(d3.range(-.25, 1.75, .05))
   .enter().append("circle")
     .attr("class", "tick")
     .attr("transform", function(d) { return "translate(" + d3.interpolate(p0, p1)(d) + ")"; }) //SHOW OFF INTERPOLATE
@@ -90,7 +92,7 @@ function move(p2) {
       x10 = p1[0] - p0[0],
       y10 = p1[1] - p0[1],
       p3 = [p0[0] + t * x10, p0[1] + t * y10];
-
+    
   label.attr("transform", "translate(" + p3 + ")rotate(" + Math.atan2(y10, x10) / Math.PI * 180 + ")").text(t.toFixed(3));
   closest.attr("transform", "translate(" + p3 + ")").classed("intersects", Math.abs(t - .5) < .5);
   projection.attr("d", "M" + p2 + "L" + p3);
@@ -102,6 +104,7 @@ function pointLineSegmentParameter(p2, p0, p1) {
   return (x20 * x10 + y20 * y10) / (x10 * x10 + y10 * y10);
 }
 
-function arc(){
+function arcLineSegment(){
+
 
 }

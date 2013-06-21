@@ -15,7 +15,7 @@ div.item{
 }
 div.container{
 	font:12px Lucida Sans, Verdana, sans;
-	color:white;
+	color:black;
 }
 div.left{
 	border: 3px ;
@@ -24,6 +24,7 @@ div.left{
 	margin-right: 20px;
 	background-image:url('img/shelf.png');
 	background-color:#cccccc;
+	color:white;
 }
 div.right{
 	border:solid 3px green;

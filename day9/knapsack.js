@@ -30,7 +30,10 @@ var knapsack=function(){
 			left=$('<div></div>').addClass('left container');
 			
 			left.css('width',width);
+			console.log( String(block_size*1.5*6.0) + 'px ' + String(width) + 'px ');
 			//left.append($('<img class=shelf></img>').attr('src', 'img/shelf.png').width(width).height(block_size*1.5*6.0));
+			left.css('background-size',  String(width) + 'px ' +String(block_size*1.5*6.0) + 'px ' );
+			console.log(left.css('background-size'));
 			right=$('<div></div>').addClass('right container');
 			
 			right.css('width',width);

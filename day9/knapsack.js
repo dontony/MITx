@@ -30,7 +30,7 @@ var knapsack=function(){
 			left=$('<div></div>').addClass('left container');
 			
 			left.css('width',width);
-			left.append($('<img class=shelf></img>').attr('src', 'img/shelf.png').width(width).height(block_size*1.5*6.0));
+			//left.append($('<img class=shelf></img>').attr('src', 'img/shelf.png').width(width).height(block_size*1.5*6.0));
 			right=$('<div></div>').addClass('right container');
 			
 			right.css('width',width);
@@ -183,8 +183,14 @@ var knapsack=function(){
 			}
 		}
 		function alert(event){
-			$('.modal-body').prepend($('<img></img>').attr('src', 'img/'+event.img).addClass('alert-img'));
-			$('.modal-alert').text(event.message);
+			$('.modal-body').html('');
+			console.log(event.img)
+
+			$('.modal-body').text(event.message);
+			if(event.img!=null){
+				
+				$('.modal-body').add($('<img></img>').attr('src', 'img/'+event.img).addClass('alert-img'));
+			}
 			$('#modal-from-dom').modal('show');
 
 		}

@@ -22,6 +22,8 @@ div.left{
 	background-color: rgba(70,150,250,.5);
 	float:left;
 	margin-right: 20px;
+	background-image:url('img/shelf.png');
+	background-color:#cccccc;
 }
 div.right{
 	border:solid 3px green;

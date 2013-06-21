@@ -11,17 +11,56 @@ div.item{
 	float:left;
 	cursor: move;
 	z-index: 10;
+	padding:3px;
 }
-
+div.container{
+	font:12px Lucida Sans, Verdana, sans;
+	color:white;
+}
 div.left{
-	border:solid 3px blue;
+	border: 3px ;
 	background-color: rgba(70,150,250,.5);
+	float:left;
+	margin-right: 20px;
 }
 div.right{
 	border:solid 3px green;
 	background-color: rgba(70,250,150,.5);
+	float:left;
+	color:black;
+	/*margin-left: 30px*/
 }
 div.full{
 	border:solid 3px red;
 	background-color: rgba(250, 70,150,.5);
+}
+
+div.value{
+	/*-moz-transform:rotate(90deg);
+	-webkit-transform:rotate(90deg);
+	-o-transform:rotate(90deg);
+	-ms-transform:rotate(90deg);*/
+	background: green;
+	/*position: absolute;
+	width:100px;*/
+}
+div.progress{
+	background: yellow;
+	border-color:rgb();
+	position: relative;
+}
+.progress .ui-progressbar-value{
+	background: orange;
+}
+.value .ui-progressbar-value{
+	background: lightgreen;
+}
+img.shelf{
+	position:absolute;
+	overflow: hidden;
+	z-index:1;
+}
+div.progressText{
+	text-align: right;
+
 }

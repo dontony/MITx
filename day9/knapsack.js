@@ -7,22 +7,31 @@ var knapsack=function(){
 		var blocks_on_right=0; //each item will fit in a block, 4 blocks on each row of the container
 		var block_size;
 		var sizeBar;
-		var value;
+		var valueBar;
+		var root;
 		setup(div, model);
 		
 		function setup(wrapper, model){
-			var width=$(wrapper).width()/2-20;
-			block_size=width/4;
+			root=$(wrapper);
+			var width=root.width()/2-20;
+			block_size=width/4-6;
 
-			var size=$('<div></div>').addClass('progress');
-			size.progressbar({max:model.getMaxSize()});
-			sizeBar=size.progressbar('widget');
+			var size=$('<div><span class =progressNum>'+model.getMaxSize()+'</span>/'+model.getMaxSize()+' space is left in your bag</div>').addClass('progressText');
+			sizeBar=$('<div></div>').addClass('progress').progressbar({max:model.getMaxSize()});
+			size.append(sizeBar);
+			sizeBar=sizeBar.progressbar('widget');
 			sizeBar.progressbar('enable');
+			var value=$('<div><span class =valueNum>'+0+'</span>/'+' is the total utility of your bag</div>').addClass('progressText');
+			valueBar=$('<div></div>').addClass('value').progressbar({max:model.getSolution()});
+			value.append(valueBar);
+			valueBar=valueBar.progressbar('widget');
+			valueBar.progressbar('enable');
 
-			left=$('<div></div>').addClass('left container pull-left');
+			left=$('<div></div>').addClass('left container');
 			
 			left.css('width',width);
-			right=$('<div></div>').addClass('right container pull-right');
+			left.append($('<img class=shelf></img>').attr('src', 'img/shelf.png').width(width).height(block_size*1.5*6.0));
+			right=$('<div></div>').addClass('right container');
 			
 			right.css('width',width);
 			model.getItems().forEach(function(item, i){
@@ -30,7 +39,7 @@ var knapsack=function(){
 				var div=$('<div></div>');
 				div.addClass('item animated shape');
 				div.attr('alt', item.name)
-				div.append($('<img ></img>').attr('src', 'img/sword.png'));//+item.img));
+				div.append($('<img ></img>').attr('src', 'img/'+item.img).width(block_size).height(block_size));
 				div.append($('<div></div>').text('size: '+item.size+' value: '+item.value));
 				div.height(block_size*1.5);
 				div.width(block_size);
@@ -55,11 +64,12 @@ var knapsack=function(){
 				tolerance: "touch",
 				drop: function (event, ui){
 					var item_name=(ui.helper.attr('alt'));
+					console.log('1. dropped '+item_name+' to right');
 				
 					if(model.removeFromKS(item_name)){
-						console.log('escape');
+						console.log('3. escape to left succesful');
 					}else{
-						console.log(ui);
+						console.log('3. '+ item_name +' failed to escape');
 						ui.helper.animate({'left':0,'top':0}, 500);
 					}
 				}
@@ -71,11 +81,11 @@ var knapsack=function(){
 				tolerance: "touch",
 				drop: function (event, ui){
 					var item_name=(ui.helper.attr('alt'));
-
+					console.log('1. dropped '+item_name+' to right');
 					if(model.addToKS(item_name)){
-						console.log('pass');
+						console.log('3. pass to right successful');
 					}else{
-						console.log(ui);
+						console.log('3. '+ item_name + ' failed to pass');
 						ui.helper.animate({'left':0,'top':0}, 500);
 					}
 				}
@@ -83,7 +93,10 @@ var knapsack=function(){
 			});
 			model.on('added',addedToKnapsack);
 			model.on('removed',removedFromKnapsack);
-			$(wrapper).append(size,left, right);
+			root.append(size,value,left, right);
+			// value.css('left', root.width()-20);
+			// value.css('top', '10em');
+			//set height to max height after it being calculated by the divs that change. 
 			height=$(left).height();
 			right.height(height);
 			left.height(height);
@@ -94,12 +107,14 @@ var knapsack=function(){
 		{
 			//to be triggered by model
 
-			console.log('added to right');
-			var div=$('.item').filter(function(i, e){return $(e).attr('alt')==event.item.name})
-			console.log(div);
+			///console.log('added to right');
+			var div=root.find('.item').filter(function(i, e){return $(e).attr('alt')==event.item.name})
+			console.log('2. added to right:')
+			console.log(div.attr('alt'));
 			if(event.item.inKS){
 				var oldLeft=div.offset().left;
 				var oldTop=div.offset().top;
+
 				div.detach();
 				
 				var actualLeft=oldLeft+parseInt(div.css('left'));
@@ -108,15 +123,19 @@ var knapsack=function(){
 				right.append(div);
 				var newLeft=div.offset().left;
 				var newTop=div.offset().top;
-				console.log(div.offset().left-right.offset().left)
+				//console.log(div.offset().left-right.offset().left)
 				div.css('left', actualLeft-newLeft);
 				div.css('top', actualTop-newTop);
 					
 				
 				div.animate({'left':0,'top':0}, 500);
+
+				sizeBar.progressbar({value:event.size});
+				valueBar.progressbar({value:event.value});
+				sizeBar.parent().find('.progressNum').text(event.size);
+				valueBar.parent().find('.valueNum').text(event.value);
 			}
-			console.log(event.size);
-			sizeBar.progressbar({value:event.size});
+			
 			if(event.isFull){
 				right.addClass('full');
 			}else{
@@ -127,8 +146,38 @@ var knapsack=function(){
 
 		function removedFromKnapsack(event)
 		{	
-			console.log('removed from right');
+			console.log('2. removed from right:');
 			//to be triggered by model
+			var div=root.find('.item').filter(function(i, e){return $(e).attr('alt')==event.item.name})
+			console.log(div.attr('alt'));
+			if(!event.item.inKS){
+				var oldLeft=div.offset().left;
+				var oldTop=div.offset().top;
+
+				div.detach();
+				
+				var actualLeft=oldLeft+parseInt(div.css('left'));
+				var actualTop=oldTop+parseInt(div.css('top'));
+
+				left.append(div);
+				var newLeft=div.offset().left;
+				var newTop=div.offset().top;
+				//console.log(div.offset().left-right.offset().left)
+				div.css('left', actualLeft-newLeft);
+				div.css('top', actualTop-newTop);
+					
+				sizeBar.progressbar({value:event.size});
+				valueBar.progressbar({value:event.value});
+				sizeBar.parent().find('.progressNum').text(event.size);
+				valueBar.parent().find('.valueNum').text(event.value);
+				div.animate({'left':0,'top':0}, 500);
+			}
+			
+			if(event.isFull){
+				right.addClass('full');
+			}else{
+				right.removeClass('full');
+			}
 		}
 		function draggable(div){
 			$(div).draggable({

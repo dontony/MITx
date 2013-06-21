@@ -8,7 +8,6 @@ function Model(list, size, length){
 	var max_length=length||list.length;
 	//max number of items in knapsack, NO MULTIPLES
 	//optional parameter
-
 	var knapsack=[];
 	//list of objects in knapsack
 	var ks_size=0;
@@ -23,14 +22,13 @@ function Model(list, size, length){
 		console.log(max_length);
 
 		list.forEach(function(d){ d.inKS=false;objects.push(d)});
-
 		return objects;
 	}
 
 	function addToKS(name){
 		var item=objects.filter(function(e, i){return e.name==name})[0];
-	
-		if(item){
+		
+		if(item&&!item.inKS){
 			if(item.size+ks_size<=max_size&&1+knapsack.length<=max_length){
 
 				knapsack.push(item);
@@ -43,8 +41,10 @@ function Model(list, size, length){
 
 				return true;
 			}			//update event handler 
-
-		}
+			console.log('knapsack is full');
+			return false;
+		}	
+		console.log(item.name + " is already in the knapsack")
 		return false;
 	}
 
@@ -52,18 +52,21 @@ function Model(list, size, length){
 		var index;
 		var item=knapsack.filter(function(e, i){index=i;return e.name==name})[0];
 		console.log(index)
-		if(item){
+		console.log(knapsack[index].name);
+		if(item&&item.inKS){
 				knapsack.splice(index, 1);
+				console.log('removed ' + item.name + '    from');
+				console.log(knapsack);
 				ks_size-=item.size;
 				ks_value-=item.value;
 				item.inKS=false; //TODO doublecheck if inKS is maintained
-				event_handler.trigger();
-				console.log(ks_size);
+				console.log(ks_size);	
 				event_handler.trigger('removed', {item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
 
 				return true;
 			
 		}
+		console.log(item.name +' is not in the knapsack');
 		return false;
 	}
 
@@ -82,6 +85,18 @@ function Model(list, size, length){
 	function getMaxSize(){
 		return max_size;
 	}
+	function getMaxLength(){
+		return max_length;
+	}
+	function solve(i, size_left){
+		if(i<0||size_left<0){
+			return 0;
+		}
+		return Math.max(solve(i-1, size_left-objects[i].size)+objects[i].value, solve(i-1, size_left));
+	}
+	function getSolution(){
+		return solve(max_length-1, max_size);
+	}
 	var exports={};
 	exports.list=list;
 	exports.getItems=getItems;
@@ -91,6 +106,8 @@ function Model(list, size, length){
 	exports.getValue=getValue;
 	exports.getSize=getSize;
 	exports.getMaxSize=getMaxSize;
+	exports.getMaxLength=getMaxLength;
+	exports.getSolution=getSolution;
 	exports.on=event_handler.on;
 	return exports;
 };

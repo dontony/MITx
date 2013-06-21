@@ -60,7 +60,21 @@ img.shelf{
 	overflow: hidden;
 	z-index:1;
 }
+img.alert-img{
+	width:150px;
+	height:150px;
+}
 div.progressText{
 	text-align: right;
+	padding-bottom:20px;
+}
 
+#modal-from-dom{
+	width:300px;
+}
+.modal-header{
+	background: rgba(250, 10, 10, 0.5);
+}
+.modal-footer{
+	background: rgba(250, 10, 10, 0.5);
 }

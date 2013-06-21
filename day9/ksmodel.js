@@ -28,32 +28,47 @@ function Model(list, size, length){
 	function addToKS(name){
 		var item=objects.filter(function(e, i){return e.name==name})[0];
 		
-		if(item&&!item.inKS){
-			if(item.size+ks_size<=max_size&&1+knapsack.length<=max_length){
+		if(item){ //if item exists
+			if(!item.inKS){ //and item is not in knapsack already
+				if(item.size+ks_size<=max_size&&1+knapsack.length<=max_length){
+					//and we can put it in the knapsack, then add it to the knapsack
+					knapsack.push(item);
+					ks_size+=item.size;
+					ks_value+=item.value;
+					item.inKS=true; //TODO doublecheck if inKS is maintained
+					
+					console.log(ks_size);
+					//and tell the view that we just added an item to the knapsack
+					event_handler.trigger('added', {item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
 
-				knapsack.push(item);
-				ks_size+=item.size;
-				ks_value+=item.value;
-				item.inKS=true; //TODO doublecheck if inKS is maintained
-				
-				console.log(ks_size);
-				event_handler.trigger('added', {item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
-
-				return true;
-			}			//update event handler 
-			console.log('knapsack is full');
-			return false;
-		}	
-		console.log(item.name + " is already in the knapsack")
+					return true;
+				}
+				else{//we can't put item in knapsack it is too big to fit
+					if(ks_size==max_size)
+						event_handler.trigger('alert',{img: item.img,message:'knapsack is full, you can\'t put any more items in'});
+					else
+						event_handler.trigger('alert',{img: item.img,message:name+' is too big to fit in knapsack'});
+					return false;
+				}
+			}
+			else{ //item is in knapsack, so it can't be added again
+				event_handler.trigger('alert', {img: item.img,message:name+' is already in the knapsack'});
+			}
+		}
+		else{ //item does not exist
+			event_handler.trigger('alert',{message:name + " does not exist"});
+		}		
 		return false;
 	}
 
 	function removeFromKS(name){
 		var index;
-		var item=knapsack.filter(function(e, i){index=i;return e.name==name})[0];
+		var item=knapsack.filter(function(e, i){if(e.name==name){index=i;}return e.name==name})[0];
 		console.log(index)
-		console.log(knapsack[index].name);
-		if(item&&item.inKS){
+		
+		if(item){
+			if(item.inKS){
+				console.log(knapsack[index].name);
 				knapsack.splice(index, 1);
 				console.log('removed ' + item.name + '    from');
 				console.log(knapsack);
@@ -61,12 +76,18 @@ function Model(list, size, length){
 				ks_value-=item.value;
 				item.inKS=false; //TODO doublecheck if inKS is maintained
 				console.log(ks_size);	
-				event_handler.trigger('removed', {item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
+				event_handler.trigger('removed', {img: item.img,item:item, size:ks_size, value:ks_value, isFull:ks_size>=max_size});
 
 				return true;
+			}
+			else{
+				event_handler.trigger('alert',{img: item.img,message:name + ' is not in the knapsack, so we cannot take it out'});
+			}
 			
 		}
-		console.log(item.name +' is not in the knapsack');
+		else{
+			event_handler.trigger('alert',{message:name + ' is does not exist'});
+		}
 		return false;
 	}
 

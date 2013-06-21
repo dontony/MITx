@@ -91,8 +91,11 @@ var knapsack=function(){
 				}
 
 			});
+
+			//controllers being added to the view from the model
 			model.on('added',addedToKnapsack);
 			model.on('removed',removedFromKnapsack);
+			model.on('alert', alert);
 			root.append(size,value,left, right);
 			// value.css('left', root.width()-20);
 			// value.css('top', '10em');
@@ -132,7 +135,7 @@ var knapsack=function(){
 
 				sizeBar.progressbar({value:event.size});
 				valueBar.progressbar({value:event.value});
-				sizeBar.parent().find('.progressNum').text(event.size);
+				sizeBar.parent().find('.progressNum').text(model.getMaxSize()-event.size);
 				valueBar.parent().find('.valueNum').text(event.value);
 			}
 			
@@ -168,7 +171,7 @@ var knapsack=function(){
 					
 				sizeBar.progressbar({value:event.size});
 				valueBar.progressbar({value:event.value});
-				sizeBar.parent().find('.progressNum').text(event.size);
+				sizeBar.parent().find('.progressNum').text(model.getMaxSize()-event.size);
 				valueBar.parent().find('.valueNum').text(event.value);
 				div.animate({'left':0,'top':0}, 500);
 			}
@@ -178,6 +181,12 @@ var knapsack=function(){
 			}else{
 				right.removeClass('full');
 			}
+		}
+		function alert(event){
+			$('.modal-body').prepend($('<img></img>').attr('src', 'img/'+event.img).addClass('alert-img'));
+			$('.modal-alert').text(event.message);
+			$('#modal-from-dom').modal('show');
+
 		}
 		function draggable(div){
 			$(div).draggable({
@@ -295,3 +304,8 @@ $(document).ready(function(){
 		knapsack.setup(dom);
 	});
 });
+
+function hide(){
+	console.log('hide');
+	$('#modal-from-dom').modal('hide');
+}

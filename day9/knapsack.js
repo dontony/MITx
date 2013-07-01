@@ -95,17 +95,33 @@ var knapsack=function(){
 
 			});
 
+
+			var tryHeaviest=$('<button>Try Heaviest </button>').addClass('btn-large btn-info heaviestButton');
+			var tryRatio=$('<button>Try ratio </button>').addClass('btn-large btn-info ratioButton');
+			var tryCostliest=$('<button>Try Costliest </button>').addClass('btn-large btn-info optimalButton');
+
+			var buttonDiv=$('<div></div>');
+
+
+			buttonDiv.append(tryHeaviest, tryRatio, tryCostliest);
+
+
 			//controllers being added to the view from the model
+			tryHeaviest.on('click', model.tryHeaviest);
+			tryRatio.on('click', model.tryRatio);
+			tryCostliest.on('click', model.tryCostliest);
+
 			model.on('added',addedToKnapsack);
 			model.on('removed',removedFromKnapsack);
 			model.on('alert', alert);
-			root.append(size,value,left, right);
+			root.append(size,value,left, right, buttonDiv);
 			// value.css('left', root.width()-20);
 			// value.css('top', '10em');
 			//set height to max height after it being calculated by the divs that change. 
 			height=$(left).height();
 			right.height(height);
 			left.height(height);
+			console.log(JSON.stringify(model));
 			return height;
 		}
 

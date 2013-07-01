@@ -110,6 +110,7 @@ function Model(list, size, length){
 		return max_length;
 	}
 	function solve(i, size_left){
+
 		if(i<0||size_left<0){
 			return 0;
 		}
@@ -117,6 +118,21 @@ function Model(list, size, length){
 	}
 	function getSolution(){
 		return solve(max_length-1, max_size);
+	}
+
+	function tryHeaviest(){
+		list = objects.sort(function(item){return item.size;});
+		console.log(list);
+		
+	}
+	function tryRatio(){
+		list = objects.sort(function(item){return item.value/item.size;});
+		console.log(list);
+		
+	}
+	function tryCostliest(){
+		list = objects.sort(function(item){return item.value;})
+		console.log(list);
 	}
 	var exports={};
 	exports.list=list;
@@ -129,6 +145,9 @@ function Model(list, size, length){
 	exports.getMaxSize=getMaxSize;
 	exports.getMaxLength=getMaxLength;
 	exports.getSolution=getSolution;
+	exports.tryHeaviest=tryHeaviest;
+	exports.tryCostliest=tryCostliest;
+	exports.tryRatio=tryRatio;
 	exports.on=event_handler.on;
 	return exports;
 };
